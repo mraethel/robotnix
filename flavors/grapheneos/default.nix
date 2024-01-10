@@ -8,7 +8,7 @@ let
     mkIf mkMerge mkDefault mkForce;
 
   upstreamParams = import ./upstream-params.nix;
-  grapheneOSRelease = "${config.apv.buildID}.${upstreamParams.buildNumber}";
+  grapheneOSRelease = optionalString (config.androidVersion < 14) "${config.apv.buildID}." + "${upstreamParams.buildNumber}";
 
   phoneDeviceFamilies = [ "crosshatch" "bonito" "coral" "sunfish" "redfin" "barbet" "bluejay" "pantah" ];
   supportedDeviceFamilies = phoneDeviceFamilies ++ [ "generic" ];
@@ -40,7 +40,7 @@ let
 in
 mkIf (config.flavor == "grapheneos") (mkMerge [
   rec {
-    androidVersion = mkDefault 13;
+    androidVersion = mkDefault 14;
     buildNumber = mkDefault upstreamParams.buildNumber;
     buildDateTime = mkDefault upstreamParams.buildDateTime;
 
@@ -80,8 +80,17 @@ mkIf (config.flavor == "grapheneos") (mkMerge [
     # Disable setting SCHED_BATCH in soong. Brings in a new dependency and the nix-daemon could do that anyway.
     source.dirs."build/soong".patches = [
       (pkgs.fetchpatch {
-        url = "https://github.com/GrapheneOS/platform_build_soong/commit/76723b5745f08e88efa99295fbb53ed60e80af92.patch";
-        sha256 = "0vvairss3h3f9ybfgxihp5i8yk0rsnyhpvkm473g6dc49lv90ggq";
+        url = "https://github.com/GrapheneOS/platform_build_soong/commit/cee69380e8e3f3969408ceb91c3f2d4c84524ca5.patch";
+        hash = "sha256-dgl8flBeSs1dHSSRa5pDaiVpdBcccS3SCcWLspfvXOY=";
+        revert = true;
+      })
+    ];
+
+    # Disable 
+    source.dirs."vendor/adevtool".patches = [
+      (pkgs.fetchpatch {
+        url = "https://github.com/GrapheneOS/adevtool/commit/409c89cbdc0626941bafca0ee75eed9b9ae20400.patch";
+        hash = "sha256-HDntl2kG04sZyGzZlX5tisWvDl0oLoBI83mUirLzKDg=";
         revert = true;
       })
     ];
