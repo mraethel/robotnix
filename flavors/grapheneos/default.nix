@@ -86,14 +86,13 @@ mkIf (config.flavor == "grapheneos") (mkMerge [
       })
     ];
 
-    # Disable 
-    source.dirs."vendor/adevtool".patches = [
-      (pkgs.fetchpatch {
-        url = "https://github.com/GrapheneOS/adevtool/commit/409c89cbdc0626941bafca0ee75eed9b9ae20400.patch";
-        hash = "sha256-HDntl2kG04sZyGzZlX5tisWvDl0oLoBI83mUirLzKDg=";
-        revert = true;
-      })
-    ];
+#   source.dirs."vendor/adevtool".patches = [
+#     (pkgs.fetchpatch {
+#       url = "https://github.com/GrapheneOS/adevtool/commit/409c89cbdc0626941bafca0ee75eed9b9ae20400.patch";
+#       hash = "sha256-HDntl2kG04sZyGzZlX5tisWvDl0oLoBI83mUirLzKDg=";
+#       revert = true;
+#     })
+#   ];
 
     # hack to make sure the out directory remains writeable after copying files/directories from /nix/store mounted sources
     source.dirs."prebuilts/build-tools".postPatch = mkIf (config.androidVersion >= 13) ''
