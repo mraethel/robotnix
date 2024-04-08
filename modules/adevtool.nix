@@ -10,8 +10,10 @@ let
       src = pkgs.emptyDirectory;
       installPhase = ''
         mkdir -p $out
+        
         export HOME=$(pwd)
         export DEBUG=*
+        
         ${adevtool} download $out -d ${device} -b ${buildID} -t factory ota | cat
       '';
 
