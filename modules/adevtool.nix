@@ -8,13 +8,17 @@ let
     pkgs.stdenv.mkDerivation {
       name = "fetch-vendor-firmware";
       src = pkgs.emptyDirectory;
+      unpackPhase = ''
+        ${unpackPhase}
+      '';
       installPhase = ''
         mkdir -p $out
         
         export HOME=$(pwd)
         export DEBUG=*
         
-        ${adevtool} download $out -d ${device} -b ${buildID} -t factory ota | cat
+        # ${adevtool} download $out -d ${device} -b ${buildID} -t factory ota | cat
+        ./vendor/adevtool/bin/run download $out -d ${device} -b ${buildID} -t factory ota | cat
       '';
 
       outputHashMode = "recursive";
